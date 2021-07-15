@@ -1,4 +1,5 @@
 import Flutter
+import IOSSecuritySuite
 import UIKit
 
 public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
@@ -9,6 +10,18 @@ public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    result("iOS " + UIDevice.current.systemVersion)
+    if let args = call.arguments as? [String: Any], let bundleId = args["bundleId"] as? String, let mobileProvision = args["mobileProvision"] as? String {
+      if IOSSecuritySuite.amITampered([.bundleID(bundleId),
+                                       .mobileProvision(mobileProvision)]).result
+      {
+        result(String("tampered"))
+      } else {
+        result(String("notTampered"))
+      }
+    } else {
+      result(FlutterError(code: "MissingParameters", message: "One or more parameters are missing.", details: nil))
+    }
+
+    result(FlutterError(code: "genericError", message: "Generic Error", details: nil))
   }
 }

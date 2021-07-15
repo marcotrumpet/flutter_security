@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_security/flutter_security.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('flutter_security');
@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await FlutterSecurity.platformVersion, '42');
+    expect(await FlutterSecurity.amITampered, '42');
   });
 }

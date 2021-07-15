@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_security/flutter_security.dart';
+import 'package:flutter_security/helpers/response_codes.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String? _amItamperedResponse;
 
   @override
   void initState() {
@@ -24,13 +24,9 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
+    ResponseSecurityCodes amItampered;
     // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await FlutterSecurity.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+    amItampered = await FlutterSecurity.amITampered;
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -38,7 +34,20 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      switch (amItampered) {
+        case ResponseSecurityCodes.tampered:
+          _amItamperedResponse = 'YES!!!';
+          break;
+        case ResponseSecurityCodes.notTampered:
+          _amItamperedResponse = 'No.';
+          break;
+        case ResponseSecurityCodes.genericError:
+          _amItamperedResponse = 'Unable to check, something goes wrong';
+          break;
+        case ResponseSecurityCodes.missingParametersError:
+          _amItamperedResponse = 'Missing parameters';
+          break;
+      }
     });
   }
 
@@ -50,7 +59,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text('Am I tampered?\n$_amItamperedResponse\n'),
         ),
       ),
     );

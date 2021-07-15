@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_security (0.0.1):
+    - Flutter
+    - IOSSecuritySuite
+  - IOSSecuritySuite (1.9.1)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_security (from `.symlinks/plugins/flutter_security/ios`)
+
+SPEC REPOS:
+  trunk:
+    - IOSSecuritySuite
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_security:
+    :path: ".symlinks/plugins/flutter_security/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_security: ee7f7f68890b7a1451412f69ba18a22fd571ce36
+  IOSSecuritySuite: 0dbc01c68ce296c390ccf0443bf68cb40077abe8
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.10.1
