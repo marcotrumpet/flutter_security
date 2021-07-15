@@ -18,7 +18,10 @@ class IosSecurityOptions extends PlatformSecurityOptions {
 
 @JsonSerializable()
 class AndroidSecurityOptions extends PlatformSecurityOptions {
-  AndroidSecurityOptions();
+  final String? sha1;
+
+  AndroidSecurityOptions({this.sha1});
+
   factory AndroidSecurityOptions.fromJson(Map<String, dynamic> json) =>
       _$AndroidSecurityOptionsFromJson(json);
   Map<String, dynamic> toJson() => _$AndroidSecurityOptionsToJson(this);

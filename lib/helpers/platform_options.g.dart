@@ -21,9 +21,13 @@ Map<String, dynamic> _$IosSecurityOptionsToJson(IosSecurityOptions instance) =>
 
 AndroidSecurityOptions _$AndroidSecurityOptionsFromJson(
     Map<String, dynamic> json) {
-  return AndroidSecurityOptions();
+  return AndroidSecurityOptions(
+    sha1: json['sha1'] as String?,
+  );
 }
 
 Map<String, dynamic> _$AndroidSecurityOptionsToJson(
         AndroidSecurityOptions instance) =>
-    <String, dynamic>{};
+    <String, dynamic>{
+      'sha1': instance.sha1,
+    };

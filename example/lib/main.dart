@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_security/flutter_security.dart';
+import 'package:flutter_security/helpers/platform_options.dart';
 import 'package:flutter_security/helpers/response_codes.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String? _amItamperedResponse;
+  String? _amItamperedResponse = 'Let me check';
 
   @override
   void initState() {
@@ -26,13 +27,18 @@ class _MyAppState extends State<MyApp> {
   Future<void> initPlatformState() async {
     ResponseSecurityCodes amItampered;
     // Platform messages may fail, so we use a try/catch PlatformException.
-    amItampered = await FlutterSecurity.amITampered;
+    amItampered = await FlutterSecurity.amITampered(
+      iosSecurityOptions: IosSecurityOptions(
+          bundleId: 'com.example.app', mobileProvision: 'some_hash_values'),
+      androidSecurityOptions: AndroidSecurityOptions(sha1: 'some_sha1_values'),
+    );
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
+    await Future.delayed(Duration(seconds: 1));
     setState(() {
       switch (amItampered) {
         case ResponseSecurityCodes.tampered:

@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await FlutterSecurity.amITampered, '42');
+    expect(FlutterSecurity.amITampered, '42');
   });
 }
