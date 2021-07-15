@@ -1,8 +1,7 @@
 name: flutter_security
 description: A flutter package that aim to take care of your mobile app security side.
 version: 0.0.1
-author:
-homepage:
+homepage: https://github.com/marcotrumpet/flutter_security
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
