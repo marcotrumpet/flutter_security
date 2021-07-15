@@ -1,8 +1,8 @@
 .DS_Store
 .dart_tool/
-.fvm/
-.idea/
-.vscode/
+.fvm
+.idea
+.vscode
 
 .packages
 .pub/
