@@ -11,11 +11,11 @@ and some stackoverflow helpful posts (that I lost links of) for android implemen
 
 #### Android
 
-To be able to check for anti tampering on Android you need to provide the SHA-1 of the keystore of your app. If you are in debug mode and you didn't make a keystore, a SHA is assigned to your app. Please check you app level `build.gradle`.
+To be able to check for anti tampering on Android you need to provide the SHA-1 of the keystore of your app. If you are in debug mode and you didn't make a keystore, a SHA is assigned to your app. Please check your app level `build.gradle`.
 
 #### iOs
 
-To be able to check for anti tampering on iOs you need a little bit more work to be done. As mentioned [here](https://github.com/securing/IOSSecuritySuite/issues/30#issuecomment-769705779) you need to provider you `bundleId` and the hashed value of the `mobile.provision` (a file contained into .ipa builded file):
+To be able to check for anti tampering on iOs you need a little bit more work to be done. As mentioned [here](https://github.com/securing/IOSSecuritySuite/issues/30#issuecomment-769705779) you need to provider your `bundleId` and the hashed value of the `mobile.provision` (a file contained into .ipa builded file):
 1. Unzip the .ipa
 2. Go into the payload folder, right click on the app, click on `Show Package Contents`
 3. You should see the **Unix executable** with my app name (Example, "test" is the name in this case)

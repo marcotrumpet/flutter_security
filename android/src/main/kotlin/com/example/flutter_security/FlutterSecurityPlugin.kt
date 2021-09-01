@@ -36,7 +36,6 @@ class FlutterSecurityPlugin: FlutterPlugin, MethodCallHandler, FlutterActivity()
       } else {
           result.success("tampered")
       }
-      result.error("genericError", "Generic Error", null);
     } else {
       result.notImplemented()
     }
