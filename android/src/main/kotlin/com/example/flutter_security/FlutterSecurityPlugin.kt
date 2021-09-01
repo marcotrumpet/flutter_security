@@ -1,5 +1,7 @@
 package com.example.flutter_security
 
+import android.annotation.SuppressLint
+import android.content.Context
 import androidx.annotation.NonNull
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -12,40 +14,46 @@ import io.flutter.plugin.common.MethodChannel.Result
 import android.content.pm.PackageManager
 import android.os.Build
 import java.security.MessageDigest
+import android.util.Log
 
 /** FlutterSecurityPlugin */
-class FlutterSecurityPlugin: FlutterPlugin, MethodCallHandler, FlutterActivity() {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel : MethodChannel
+@Suppress("DEPRECATION")
+class FlutterSecurityPlugin : FlutterPlugin, MethodCallHandler, FlutterActivity() {
+    /// The MethodChannel that will the communication between Flutter and native Android
+    ///
+    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+    /// when the Flutter Engine is detached from the Activity
+    private lateinit var channel: MethodChannel
+    @get:JvmName("getAdapterContext")
+    private lateinit var context: Context
 
-  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_security")
-    channel.setMethodCallHandler(this)
-  }
-
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "amITampered") {
-      var sha1 = call.argument<String>("sha1");
-      var signatureList = getApplicationSignature()
-
-      if (signatureList.contains(sha1)) {
-          result.success("notTampered")
-      } else {
-          result.success("tampered")
-      }
-    } else {
-      result.notImplemented()
+    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_security")
+        channel.setMethodCallHandler(this)
+        context = flutterPluginBinding.applicationContext
     }
-  }
 
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
-  }
+    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+        if (call.method == "amITampered") {
+            var sha1 = call.argument<String>("sha1")
+            var signatureList = getApplicationSignature(context.packageName, result)
 
-    fun getApplicationSignature(packageName: String = context.packageName): List<String> {
+            if (signatureList.contains(sha1)) {
+                result.success("notTampered")
+            } else {
+                result.success("tampered")
+            }
+        } else {
+            result.notImplemented()
+        }
+    }
+
+    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+    }
+
+    @SuppressLint("PackageManagerGetSignatures")
+    fun getApplicationSignature(packageName: String, @NonNull result: Result): List<String> {
         val signatureList: List<String>
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -67,6 +75,7 @@ class FlutterSecurityPlugin: FlutterPlugin, MethodCallHandler, FlutterActivity()
                     }
                 }
             } else {
+
                 val sig = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures
                 signatureList = sig.map {
                     val digest = MessageDigest.getInstance("SHA")
@@ -78,6 +87,8 @@ class FlutterSecurityPlugin: FlutterPlugin, MethodCallHandler, FlutterActivity()
             return signatureList
         } catch (e: Exception) {
             // Handle error
+            Log.d("error", e.toString())
+            result.success("genericError")
         }
         return emptyList()
     }
