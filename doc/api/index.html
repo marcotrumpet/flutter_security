@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 0.42.0">
+  <meta name="description" content="flutter_security API docs, for the Dart programming language.">
+  <title>flutter_security - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="static-assets/github.css">
+  <link rel="stylesheet" href="static-assets/styles.css">
+  <link rel="icon" href="static-assets/favicon.png">
+
+  
+</head>
+
+
+<body data-base-href=""
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/marcotrumpet/flutter_security">flutter_security package</a></li>
+  </ol>
+  <div class="self-name">flutter_security</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="https://github.com/marcotrumpet/flutter_security">flutter_security package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">flutter_security</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="flutter_security/flutter_security-library.html">flutter_security</a></li>
+      <li><a href="helpers_json_object/helpers_json_object-library.html">json_object</a></li>
+      <li><a href="helpers_platform_errors/helpers_platform_errors-library.html">platform_errors</a></li>
+      <li><a href="helpers_platform_options/helpers_platform_options-library.html">platform_options</a></li>
+      <li><a href="helpers_response_codes/helpers_response_codes-library.html">response_codes</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="flutter_security">flutter_security</h1>
+<p>A flutter package that aim to take care of your mobile app security side.</p>
+<h3 id="the-code">The Code</h3>
+<p>I'm not a native mobile developer.</p>
+<p>This package is a mashup of <a href="https://github.com/securing/IOSSecuritySuite">IOSSecuritySuite</a>
+and some stackoverflow helpful posts (that I lost links of) for android implementation</p>
+<h4 id="android">Android</h4>
+<p>To be able to check for anti tampering on Android you need to provide the SHA-1 of the keystore of your app. If you are in debug mode and you didn't make a keystore, a SHA is assigned to your app. Please check your app level <code>build.gradle</code>.</p>
+<h4 id="ios">iOs</h4>
+<p>To be able to check for anti tampering on iOs you need a little bit more work to be done. As mentioned <a href="https://github.com/securing/IOSSecuritySuite/issues/30#issuecomment-769705779">here</a> you need to provider your <code>bundleId</code> and the hashed value of the <code>mobile.provision</code> (a file contained into .ipa builded file):</p>
+<ol>
+<li>Unzip the .ipa</li>
+<li>Go into the payload folder, right click on the app, click on <code>Show Package Contents</code></li>
+<li>You should see the <strong>Unix executable</strong> with my app name (Example, "test" is the name in this case)</li>
+</ol>
+<p>Open a terminal and:</p>
+<ol>
+<li><code>otool -l **/path/to/unix/executable**</code></li>
+<li>look for value of <code>offset</code> and <code>size</code> into segname <strong>__TEXT</strong></li>
+<li>save those two values somewhere</li>
+<li>run <code>dd if=test.ipa ibs=1 skip=&lt;offset&gt; count=&lt;size&gt; | shasum -a 256</code></li>
+<li>save the SHA256 and use it in your code</li>
+</ol>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="flutter_security">
+  <span class="name"><a href="flutter_security/flutter_security-library.html">flutter_security</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="json_object">
+  <span class="name"><a href="helpers_json_object/helpers_json_object-library.html">json_object</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="platform_errors">
+  <span class="name"><a href="helpers_platform_errors/helpers_platform_errors-library.html">platform_errors</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="platform_options">
+  <span class="name"><a href="helpers_platform_options/helpers_platform_options-library.html">platform_options</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="response_codes">
+  <span class="name"><a href="helpers_response_codes/helpers_response_codes-library.html">response_codes</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    flutter_security
+      0.0.3
+  </span>
+
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js"></script>
+<script src="static-assets/script.js"></script>
+
+
+
+</body>
+
+</html>
+

@@ -24,10 +24,8 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     ResponseSecurityCodes amItampered;
-    // Platform messages may fail, so we use a try/catch PlatformException.
     amItampered = await FlutterSecurity.amITampered(
       iosSecurityOptions: IosSecurityOptions(
           bundleId: 'com.example.flutterSecurityExample',
@@ -35,9 +33,6 @@ class _MyAppState extends State<MyApp> {
       androidSecurityOptions: AndroidSecurityOptions(sha1: 'some_sha1_values'),
     );
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     await Future.delayed(Duration(seconds: 1));
