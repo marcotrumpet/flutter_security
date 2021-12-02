@@ -9,6 +9,8 @@ class PlatformResponseCodes {
         return ResponseSecurityCodes.notTampered;
       case 'missingParametersError':
         return ResponseSecurityCodes.missingParametersError;
+      case 'unavailable':
+        return ResponseSecurityCodes.unavailable;
       case 'genericError':
       default:
         return ResponseSecurityCodes.genericError;

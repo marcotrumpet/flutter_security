@@ -16,6 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String? _amItamperedResponse = 'Let me check';
+  List<String?> _list = [];
 
   @override
   void initState() {
@@ -29,7 +30,8 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     amItampered = await FlutterSecurity.amITampered(
       iosSecurityOptions: IosSecurityOptions(
-          bundleId: 'com.example.app', mobileProvision: 'some_hash_values'),
+          bundleId: 'com.example.flutterSecurityExample',
+          mobileProvision: 'some_hash_values'),
       androidSecurityOptions: AndroidSecurityOptions(sha1: 'some_sha1_values'),
     );
 
@@ -53,6 +55,9 @@ class _MyAppState extends State<MyApp> {
         case ResponseSecurityCodes.missingParametersError:
           _amItamperedResponse = 'Missing parameters';
           break;
+        case ResponseSecurityCodes.unavailable:
+          _amItamperedResponse = 'Unavailable';
+          break;
       }
     });
   }
@@ -65,7 +70,29 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Am I tampered?\n$_amItamperedResponse\n'),
+          child: Column(
+            children: [
+              Text('Am I tampered?\n$_amItamperedResponse\n'),
+              ElevatedButton(
+                onPressed: () async {
+                  final a = await FlutterSecurity.hasBundleBeenCompromised(
+                    iosSecurityOptions: IosSecurityOptions(
+                        bundleId: 'com.example.flutterSecurityExample',
+                        jsonFileName: 'encrypted.json',
+                        cryptographicKey: 'k4rAN45oL8LxH21wX2nRTDB5o1uYnnrB'),
+                  );
+                  print(a);
+                  setState(() {});
+                },
+                child: Text('check'),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Text('LIST'),
+              ..._list.map((e) => Text(e ?? '')).toList(),
+            ],
+          ),
         ),
       ),
     );

@@ -6,28 +6,39 @@ part of 'platform_options.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-IosSecurityOptions _$IosSecurityOptionsFromJson(Map<String, dynamic> json) {
-  return IosSecurityOptions(
-    bundleId: json['bundleId'] as String?,
+// ignore_for_file: non_constant_identifier_names
+_$_IosSecurityOptions _$_$_IosSecurityOptionsFromJson(
+    Map<String, dynamic> json) {
+  return _$_IosSecurityOptions(
+    bundleId: json['bundleId'] as String,
     mobileProvision: json['mobileProvision'] as String?,
+    jsonFileName: json['jsonFileName'] as String?,
+    cryptographicKey: json['cryptographicKey'] as String?,
+    listOfPaths: (json['listOfPaths'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
   );
 }
 
-Map<String, dynamic> _$IosSecurityOptionsToJson(IosSecurityOptions instance) =>
+Map<String, dynamic> _$_$_IosSecurityOptionsToJson(
+        _$_IosSecurityOptions instance) =>
     <String, dynamic>{
       'bundleId': instance.bundleId,
       'mobileProvision': instance.mobileProvision,
+      'jsonFileName': instance.jsonFileName,
+      'cryptographicKey': instance.cryptographicKey,
+      'listOfPaths': instance.listOfPaths,
     };
 
-AndroidSecurityOptions _$AndroidSecurityOptionsFromJson(
+_$_AndroidSecurityOptions _$_$_AndroidSecurityOptionsFromJson(
     Map<String, dynamic> json) {
-  return AndroidSecurityOptions(
+  return _$_AndroidSecurityOptions(
     sha1: json['sha1'] as String?,
   );
 }
 
-Map<String, dynamic> _$AndroidSecurityOptionsToJson(
-        AndroidSecurityOptions instance) =>
+Map<String, dynamic> _$_$_AndroidSecurityOptionsToJson(
+        _$_AndroidSecurityOptions instance) =>
     <String, dynamic>{
       'sha1': instance.sha1,
     };

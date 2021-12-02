@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_security (0.0.1):
+  - flutter_security (0.0.3):
     - Flutter
     - IOSSecuritySuite
   - IOSSecuritySuite (1.9.1)
@@ -21,9 +21,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
-  flutter_security: ee7f7f68890b7a1451412f69ba18a22fd571ce36
+  flutter_security: f0591c0b9a51dbf3b82824bc722792ae20d57312
   IOSSecuritySuite: 0dbc01c68ce296c390ccf0443bf68cb40077abe8
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: 82c377f60a87662261261afab61c0d39289556e4
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
