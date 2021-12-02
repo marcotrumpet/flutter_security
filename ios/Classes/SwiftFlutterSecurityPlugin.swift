@@ -1,5 +1,5 @@
 import Flutter
-import IOSSecuritySuite
+// import IOSSecuritySuite
 import UIKit
 
 public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
@@ -11,8 +11,8 @@ public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-        case "amITampered":
-            amITampered(call: call, result: result)
+        // case "amITampered":
+        //     amITampered(call: call, result: result)
         case "getBundleMD5List":
             getBundleMD5List(call: call, result: result)
         case "getCriptedJsonPath":
@@ -68,17 +68,17 @@ public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
         }
     }
 
-    private func amITampered(call: FlutterMethodCall, result: FlutterResult) {
-        if let args = call.arguments as? [String: Any], let bundleId = args["bundleId"] as? String, let mobileProvision = args["mobileProvision"] as? String {
-            if IOSSecuritySuite.amITampered([.bundleID(bundleId),
-                                             .mobileProvision(mobileProvision)]).result
-            {
-                result(String("tampered"))
-            } else {
-                result(String("notTampered"))
-            }
-        } else {
-            result(FlutterError(code: "MissingParameters", message: "One or more parameters are missing.", details: nil))
-        }
-    }
+    // private func amITampered(call: FlutterMethodCall, result: FlutterResult) {
+    //     if let args = call.arguments as? [String: Any], let bundleId = args["bundleId"] as? String, let mobileProvision = args["mobileProvision"] as? String {
+    //         if IOSSecuritySuite.amITampered([.bundleID(bundleId),
+    //                                          .mobileProvision(mobileProvision)]).result
+    //         {
+    //             result(String("tampered"))
+    //         } else {
+    //             result(String("notTampered"))
+    //         }
+    //     } else {
+    //         result(FlutterError(code: "MissingParameters", message: "One or more parameters are missing.", details: nil))
+    //     }
+    // }
 }
