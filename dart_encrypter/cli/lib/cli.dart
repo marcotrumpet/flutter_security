@@ -20,6 +20,24 @@ Future<Uint8List?> encrypt({required Uint8List file, String? secretKey}) async {
   return encrypted.bytes;
 }
 
+Future<Uint8List?> decrypt({required Uint8List file, String? secretKey}) async {
+  final key = (secretKey?.isNotEmpty ?? false)
+      ? Key.fromUtf8(secretKey!)
+      : Key.fromSecureRandom(32);
+
+  final iv = IV.fromLength(16);
+
+  final encrypter = Encrypter(AES(key));
+
+  final encrypted = Encrypted(file);
+
+  final decrypted = encrypter.decrypt(encrypted, iv: iv);
+
+  final decryptedFileAsUint8List = Uint8List.fromList(decrypted.codeUnits);
+
+  return decryptedFileAsUint8List;
+}
+
 Future<Uint8List?> handleFile(String path) async {
   final file = File(path);
   if (!file.existsSync()) {
@@ -54,6 +72,20 @@ void encryptAndSaveList(
   if (fileToSaveIntList?.isEmpty ?? true) return;
 
   final fileToSave = File('$directory/encrypted.json');
+
+  if (!fileToSave.existsSync()) {
+    fileToSave.createSync(recursive: true);
+  }
+  fileToSave.writeAsBytesSync(Uint8List.fromList(fileToSaveIntList!));
+}
+
+void decryptAndSaveList(
+    Uint8List file, String directory, String? secretKey) async {
+  final fileToSaveIntList = await decrypt(file: file, secretKey: secretKey);
+
+  if (fileToSaveIntList?.isEmpty ?? true) return;
+
+  final fileToSave = File('$directory/decrypted.json');
 
   if (!fileToSave.existsSync()) {
     fileToSave.createSync(recursive: true);

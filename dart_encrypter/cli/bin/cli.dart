@@ -51,10 +51,6 @@ void main(List<String> arguments) async {
 
   if (results['help']) return print(parser.usage);
 
-  if (results['decrypt']) {
-    return print('Decryption method not yet implemented');
-  }
-
   if (results['file'] == null &&
       results['directory'] == null &&
       !results['help']) {
@@ -64,7 +60,7 @@ void main(List<String> arguments) async {
     return print('Specify \'encrypt\' or \'decrypt\' option');
   }
 
-  if (results['file'] != null) {
+  if (results['file'] != null && results['encrypt']) {
     final uint8listFile = await handleFile(results['file']);
 
     if (uint8listFile?.isEmpty ?? true) return;
@@ -76,5 +72,14 @@ void main(List<String> arguments) async {
     final map = <String, String>{results['file']: md5!};
 
     encryptAndSaveList([map], results['directory'], results['secret-key']);
+  }
+
+  if (results['file'] != null && results['decrypt']) {
+    final uint8listFile = await handleFile(results['file']);
+
+    if (uint8listFile?.isEmpty ?? true) return;
+
+    decryptAndSaveList(
+        uint8listFile!, results['directory'], results['secret-key']);
   }
 }
