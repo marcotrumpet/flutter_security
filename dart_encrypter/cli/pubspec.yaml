@@ -7,11 +7,8 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  # crypto_keys: ^0.3.0
-  # cryptography: ^2.0.2
   encrypt: ^5.0.1
   hex: ^0.2.0
-  pointycastle: ^3.0.1
 
 dev_dependencies:
   pedantic: ^1.10.0

@@ -212,7 +212,7 @@ packages:
     source: hosted
     version: "1.11.1"
   pointycastle:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pointycastle
       url: "https://pub.dartlang.org"
