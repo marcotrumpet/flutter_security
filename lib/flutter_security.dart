@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:crypto_keys/crypto_keys.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_security/helpers/json_object.dart';
 import 'package:flutter_security/helpers/platform_errors.dart';
@@ -96,20 +95,17 @@ class FlutterSecurity {
 
     final file = File(cryptedJsonPath!).readAsBytesSync();
 
-    var keyPair = KeyPair.symmetric(
-        SymmetricKey(keyValue: Uint8List.fromList(keyString.codeUnits)));
+    final key = Key.fromUtf8(keyString);
+    final iv = IV.fromLength(16);
 
-    var decrypter =
-        keyPair.privateKey!.createEncrypter(algorithms.encryption.aes.gcm);
+    final encrypter = Encrypter(AES(key));
 
-    var decrypted = decrypter.decrypt(
-      EncryptionResult(
-        Uint8List.fromList(file.skip(12).toList()),
-        initializationVector: Uint8List.fromList(file.getRange(0, 12).toList()),
-      ),
-    );
+    final encrypted = Encrypted(file);
 
-    final decryptedFileAsString = String.fromCharCodes(decrypted);
+    final decrypted = encrypter.decrypt(encrypted, iv: iv);
+
+    final decryptedFileAsString = decrypted;
+
     final decodedObject = json.decode(decryptedFileAsString) as List<dynamic>;
 
     final jsonObject =
