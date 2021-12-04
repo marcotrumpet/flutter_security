@@ -24,6 +24,11 @@ void main(List<String> arguments) async {
       help: 'Set the output directory. Default to /',
       defaultsTo: '/',
     )
+    ..addOption(
+      'secret-key',
+      help:
+          'Set the secretKey used to encrypt or decrypt. In encryption method, default is a random secure key',
+    )
     ..addFlag(
       'encrypt',
       abbr: 'e',
@@ -46,6 +51,10 @@ void main(List<String> arguments) async {
 
   if (results['help']) return print(parser.usage);
 
+  if (results['decrypt']) {
+    return print('Decryption method not yet implemented');
+  }
+
   if (results['file'] == null &&
       results['directory'] == null &&
       !results['help']) {
@@ -66,6 +75,6 @@ void main(List<String> arguments) async {
 
     final map = <String, String>{results['file']: md5!};
 
-    encryptAndSaveList([map], results['directory']);
+    encryptAndSaveList([map], results['directory'], results['secret-key']);
   }
 }

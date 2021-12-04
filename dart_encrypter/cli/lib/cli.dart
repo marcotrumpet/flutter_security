@@ -6,13 +6,14 @@ import 'package:encrypt/encrypt.dart';
 import 'package:hex/hex.dart';
 import 'package:pointycastle/pointycastle.dart';
 
-Future<Uint8List?> encrypt({required Uint8List file}) async {
-  final key = 'k4rAN45oL8LxH21wX2nRTDB5o1uYnnrB';
+Future<Uint8List?> encrypt({required Uint8List file, String? secretKey}) async {
+  final key = (secretKey?.isNotEmpty ?? false)
+      ? Key.fromUtf8(secretKey!)
+      : Key.fromSecureRandom(32);
 
-  final keyy = Key.fromUtf8(key);
   final iv = IV.fromLength(16);
 
-  final encrypter = Encrypter(AES(keyy));
+  final encrypter = Encrypter(AES(key));
 
   final encrypted = encrypter.encrypt(String.fromCharCodes(file), iv: iv);
 
@@ -44,11 +45,11 @@ Future<String?> getMD5fromFile(Uint8List file) async {
 }
 
 void encryptAndSaveList(
-    List<Map<String, String>> list, String directory) async {
+    List<Map<String, String>> list, String directory, String? secretKey) async {
   final mapString = json.encode(list);
 
-  final fileToSaveIntList =
-      await encrypt(file: Uint8List.fromList(mapString.codeUnits));
+  final fileToSaveIntList = await encrypt(
+      file: Uint8List.fromList(mapString.codeUnits), secretKey: secretKey);
 
   if (fileToSaveIntList?.isEmpty ?? true) return;
 
