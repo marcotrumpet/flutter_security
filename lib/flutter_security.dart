@@ -44,6 +44,12 @@ class FlutterSecurity {
     }
   }
 
+  /// [hasBundleBeenCompromised] returns true if MD5 contained in the encryptd source file doesn't match with the one calculated at runtime
+  ///
+  /// iOs only
+  ///
+  /// First you need to use the script you can find [here](https://github.com/ziomarco/mobile-security-hashgenerator) to generate an encrypted Map<String, String>
+  /// like in [JsonObject], then use [jsonFileName] to pass the file name
   static Future<bool> hasBundleBeenCompromised({
     required IosSecurityOptions? iosSecurityOptions,
   }) async {
@@ -104,7 +110,8 @@ class FlutterSecurity {
 
     final decrypted = encrypter.decrypt(encrypted, iv: iv);
 
-    final decryptedFileAsString = String.fromCharCodes(decrypted.codeUnits.sublist(16));
+    final decryptedFileAsString =
+        String.fromCharCodes(decrypted.codeUnits.sublist(16));
 
     final decodedObject = json.decode(decryptedFileAsString) as List<dynamic>;
 
