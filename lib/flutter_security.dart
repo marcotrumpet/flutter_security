@@ -96,15 +96,15 @@ class FlutterSecurity {
     final file = File(cryptedJsonPath!).readAsBytesSync();
 
     final key = Key.fromUtf8(keyString);
-    final iv = IV.fromLength(16);
+    final iv = IV(file.sublist(0, 16));
 
-    final encrypter = Encrypter(AES(key));
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: 'PKCS7'));
 
     final encrypted = Encrypted(file);
 
     final decrypted = encrypter.decrypt(encrypted, iv: iv);
 
-    final decryptedFileAsString = decrypted;
+    final decryptedFileAsString = String.fromCharCodes(decrypted.codeUnits.sublist(16));
 
     final decodedObject = json.decode(decryptedFileAsString) as List<dynamic>;
 
