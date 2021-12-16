@@ -2,12 +2,42 @@
 
 A flutter package that aim to take care of your mobile app security side.
 
-### The Code
+### hasBundleBeenCompromised
 
-I'm not a native mobile developer. 
+This feature is available only on `iOs`.
 
-This package is a mashup of [IOSSecuritySuite](https://github.com/securing/IOSSecuritySuite)
-and some stackoverflow helpful posts (that I lost links of) for android implementation
+Main concept here is to check the MD5 of the files inside Frameworks (in the main bundle root) folder against a precompiled json.
+
+This json is made with [this script](https://github.com/ziomarco/mobile-security-hashgenerator/releases/tag/v0.0.3). 
+My suggestion is to use the crypting feature that uses AES in cbc mode to protect the json.
+
+#### Workflow
+
+This what I do:
+
+* build the app in order to have all the files needed
+* copy the [script](https://github.com/ziomarco/mobile-security-hashgenerator/releases/tag/v0.0.3) inside the .app file just builded. 
+In this way it can make a file with relative path
+* launch the script with all the parameters needed (eg. `./msh-darwin-amd64 generate-map --files Frameworks  --key some_random_key_phrase`)
+* check if the `encrypted.json` has been generated inside the .app
+* use the package as needed eg. 
+```
+final result = await FlutterSecurity.hasBundleBeenCompromised(
+                   iosSecurityOptions: IosSecurityOptions(
+                       bundleId: 'com.example.flutterSecurityExample',
+                       jsonFileName: 'encrypted.json',
+                       cryptographicKey: 'k4rAN45oL8LxH21wX2nRTDB5o1uYnnrB'),
+                 );
+```
+
+Then you can use 'result' as you wish (maybe make the app crash in order to stop attacks in progress) 
+
+### amITampered
+
+This feature is a mashup of [IOSSecuritySuite](https://github.com/securing/IOSSecuritySuite)
+and some stackoverflow helpful posts (that I lost links of) for android implementation.
+
+The anti-tamper feature checks a match between the signature used in the app and the one you send to package as source of truth.
 
 #### Android
 

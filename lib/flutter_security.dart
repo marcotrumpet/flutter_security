@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:crypto_keys/crypto_keys.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_security/helpers/json_object.dart';
 import 'package:flutter_security/helpers/platform_errors.dart';
@@ -45,7 +44,13 @@ class FlutterSecurity {
     }
   }
 
-  static Future<bool> hasBundleBeenCompromised({
+  /// [hasBundleBeenCompromised] returns true if MD5 contained in the encryptd source file doesn't match with the one calculated at runtime
+  ///
+  /// iOs only
+  ///
+  /// First you need to use the script you can find [here](https://github.com/ziomarco/mobile-security-hashgenerator) to generate an encrypted Map<String, String>
+  /// like in [JsonObject], then use [jsonFileName] to pass the file name
+  static Future<bool?> hasBundleBeenCompromised({
     required IosSecurityOptions? iosSecurityOptions,
   }) async {
     late Map<String, dynamic> arguments;
@@ -62,13 +67,15 @@ class FlutterSecurity {
         final decryptedObject = await _getDecriptedObject(
             arguments: arguments, iosSecurityOptions: iosSecurityOptions);
 
+        if (decryptedObject == null) return null;
         final nativeJsonObject = await _getNativeJsonObject(
             decriptedObject: decryptedObject,
             iosSecurityOptions: iosSecurityOptions);
 
-        return !(await _areMD5matching(
-            decryptedObject: decryptedObject,
-            nativeJsonObject: nativeJsonObject));
+        return await _areMD5different(
+          decryptedObject: decryptedObject,
+          nativeJsonObject: nativeJsonObject,
+        );
       } on PlatformException catch (e) {
         throw PlatformResponseCodes.fromString(e.code);
       }
@@ -76,14 +83,29 @@ class FlutterSecurity {
     throw ResponseSecurityCodes.unavailable;
   }
 
-  static Future<bool> _areMD5matching({
-    required List<JsonObject>? decryptedObject,
+  static Future<bool> _areMD5different({
+    required List<JsonObject> decryptedObject,
     required List<JsonObject> nativeJsonObject,
   }) async {
-    final matchedList = decryptedObject?.where(
-        (e) => nativeJsonObject.contains((element) => element.path == e.path));
+    JsonObject? different;
+    for (var e in decryptedObject) {
+      if (different != null) break;
 
-    return matchedList?.length == decryptedObject?.length;
+      try {
+        different = nativeJsonObject.firstWhere((element) {
+          if (element.path == e.path) {
+            if (element.hash != e.hash) {
+              return true;
+            }
+          }
+          return false;
+        });
+      } on StateError catch (_) {}
+    }
+    if (different != null) {
+      return true;
+    }
+    return false;
   }
 
   static Future<List<JsonObject>?> _getDecriptedObject({
@@ -96,20 +118,17 @@ class FlutterSecurity {
 
     final file = File(cryptedJsonPath!).readAsBytesSync();
 
-    var keyPair = KeyPair.symmetric(
-        SymmetricKey(keyValue: Uint8List.fromList(keyString.codeUnits)));
+    final key = Key.fromUtf8(keyString);
+    final iv = IV(file.sublist(0, 16));
 
-    var decrypter =
-        keyPair.privateKey!.createEncrypter(algorithms.encryption.aes.gcm);
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: 'PKCS7'));
 
-    var decrypted = decrypter.decrypt(
-      EncryptionResult(
-        Uint8List.fromList(file.skip(12).toList()),
-        initializationVector: Uint8List.fromList(file.getRange(0, 12).toList()),
-      ),
-    );
+    final encrypted = Encrypted(file.sublist(16));
 
-    final decryptedFileAsString = String.fromCharCodes(decrypted);
+    final decrypted = encrypter.decrypt(encrypted, iv: iv);
+
+    final decryptedFileAsString = String.fromCharCodes(decrypted.codeUnits);
+
     final decodedObject = json.decode(decryptedFileAsString) as List<dynamic>;
 
     final jsonObject =
@@ -137,7 +156,6 @@ class FlutterSecurity {
 
     final jsonObjectList =
         decodedJsonResult.map((e) => JsonObject.fromJson(e)).toList();
-
     return jsonObjectList;
   }
 
