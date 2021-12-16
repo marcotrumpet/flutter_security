@@ -50,7 +50,7 @@ class FlutterSecurity {
   ///
   /// First you need to use the script you can find [here](https://github.com/ziomarco/mobile-security-hashgenerator) to generate an encrypted Map<String, String>
   /// like in [JsonObject], then use [jsonFileName] to pass the file name
-  static Future<bool> hasBundleBeenCompromised({
+  static Future<bool?> hasBundleBeenCompromised({
     required IosSecurityOptions? iosSecurityOptions,
   }) async {
     late Map<String, dynamic> arguments;
@@ -67,13 +67,15 @@ class FlutterSecurity {
         final decryptedObject = await _getDecriptedObject(
             arguments: arguments, iosSecurityOptions: iosSecurityOptions);
 
+        if (decryptedObject == null) return null;
         final nativeJsonObject = await _getNativeJsonObject(
             decriptedObject: decryptedObject,
             iosSecurityOptions: iosSecurityOptions);
 
-        return !(await _areMD5matching(
-            decryptedObject: decryptedObject,
-            nativeJsonObject: nativeJsonObject));
+        return await _areMD5different(
+          decryptedObject: decryptedObject,
+          nativeJsonObject: nativeJsonObject,
+        );
       } on PlatformException catch (e) {
         throw PlatformResponseCodes.fromString(e.code);
       }
@@ -81,20 +83,39 @@ class FlutterSecurity {
     throw ResponseSecurityCodes.unavailable;
   }
 
-  static Future<bool> _areMD5matching({
-    required List<JsonObject>? decryptedObject,
+  static Future<bool> _areMD5different({
+    required List<JsonObject> decryptedObject,
     required List<JsonObject> nativeJsonObject,
   }) async {
-    final matchedList = decryptedObject?.where(
-        (e) => nativeJsonObject.contains((element) => element.path == e.path));
+    JsonObject? different;
+    final time = DateTime.now();
+    for (var e in decryptedObject) {
+      if (different != null) break;
 
-    return matchedList?.length == decryptedObject?.length;
+      try {
+        different = nativeJsonObject.firstWhere((element) {
+          if (element.path == e.path) {
+            if (element.hash != e.hash) {
+              return true;
+            }
+          }
+          return false;
+        });
+      } on StateError catch (_) {}
+    }
+    print(
+        'Total for loop done in ${DateTime.now().difference(time).inMilliseconds}ms');
+    if (different != null) {
+      return true;
+    }
+    return false;
   }
 
   static Future<List<JsonObject>?> _getDecriptedObject({
     required IosSecurityOptions? iosSecurityOptions,
     required Map<String, dynamic> arguments,
   }) async {
+    final time = DateTime.now();
     final cryptedJsonPath = await _getCriptedJsonPath(arguments);
 
     final keyString = iosSecurityOptions!.cryptographicKey!;
@@ -117,6 +138,9 @@ class FlutterSecurity {
     final jsonObject =
         decodedObject.map((e) => JsonObject.fromJson(e)).toList();
 
+    print(
+        'Total decryption done in ${DateTime.now().difference(time).inMilliseconds}ms');
+
     return jsonObject;
   }
 
@@ -124,6 +148,7 @@ class FlutterSecurity {
     required IosSecurityOptions? iosSecurityOptions,
     required List<JsonObject>? decriptedObject,
   }) async {
+    final time = DateTime.now();
     final updatedIosSecurityOptions = iosSecurityOptions!.copyWith(
       listOfPaths: decriptedObject?.map((e) => e.path).toList(),
     );
@@ -139,7 +164,8 @@ class FlutterSecurity {
 
     final jsonObjectList =
         decodedJsonResult.map((e) => JsonObject.fromJson(e)).toList();
-
+    print(
+        'Total native object fetched in ${DateTime.now().difference(time).inMilliseconds}ms');
     return jsonObjectList;
   }
 

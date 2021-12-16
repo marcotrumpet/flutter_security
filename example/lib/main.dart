@@ -16,7 +16,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String? _amItamperedResponse = 'Let me check';
-  List<String?> _list = [];
 
   @override
   void initState() {
@@ -70,22 +69,22 @@ class _MyAppState extends State<MyApp> {
               Text('Am I tampered?\n$_amItamperedResponse\n'),
               ElevatedButton(
                 onPressed: () async {
-                  final a = await FlutterSecurity.hasBundleBeenCompromised(
+                  final time = DateTime.now();
+                  final result = await FlutterSecurity.hasBundleBeenCompromised(
                     iosSecurityOptions: IosSecurityOptions(
                         bundleId: 'com.example.flutterSecurityExample',
                         jsonFileName: 'encrypted.json',
                         cryptographicKey: 'k4rAN45oL8LxH21wX2nRTDB5o1uYnnrB'),
                   );
-                  print(a);
-                  setState(() {});
+                  print(
+                      'Total bundle checks done in ${DateTime.now().difference(time).inMilliseconds}ms');
+                  print(result);
                 },
                 child: Text('check'),
               ),
               SizedBox(
                 height: 50,
               ),
-              Text('LIST'),
-              ..._list.map((e) => Text(e ?? '')).toList(),
             ],
           ),
         ),

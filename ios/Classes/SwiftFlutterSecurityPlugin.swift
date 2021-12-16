@@ -40,9 +40,10 @@ public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
 
                     for path in listOfPaths {
                         if #available(iOS 13.0, *) {
-                            let md5 = getMD5(string: bundle.resourcePath! + "/" + path)
+                            let uint8Array = getUint8ArrayFromFile(path: bundle.resourcePath! + "/" + path)
+                            let md5 = getMD5(bytes: uint8Array)
                             let temp = JsonField(path: path, hash: md5)
-
+ 
                             list.append(temp.asDictionary)
 
                         } else {
