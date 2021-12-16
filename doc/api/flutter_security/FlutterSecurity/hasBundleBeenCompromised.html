@@ -96,7 +96,7 @@
     <section class="multi-line-signature">
       
 
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>&gt;</span></span>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span>&gt;</span></span>
 <span class="name ">hasBundleBeenCompromised</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="hasBundleBeenCompromised-param-iosSecurityOptions">{<span>required</span> <span class="type-annotation"><a href="../../helpers_platform_options/IosSecurityOptions-class.html">IosSecurityOptions</a>?</span> <span class="parameter-name">iosSecurityOptions</span>}</span></li>
 </ol>)
 
@@ -115,7 +115,7 @@ like in <a href="../../helpers_json_object/JsonObject-class.html">JsonObject</a>
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static Future&lt;bool&gt; hasBundleBeenCompromised({
+  <pre class="language-dart"><code class="language-dart">static Future&lt;bool?&gt; hasBundleBeenCompromised({
   required IosSecurityOptions? iosSecurityOptions,
 }) async {
   late Map&lt;String, dynamic&gt; arguments;
@@ -132,13 +132,15 @@ like in <a href="../../helpers_json_object/JsonObject-class.html">JsonObject</a>
       final decryptedObject = await _getDecriptedObject(
           arguments: arguments, iosSecurityOptions: iosSecurityOptions);
 
+      if (decryptedObject == null) return null;
       final nativeJsonObject = await _getNativeJsonObject(
           decriptedObject: decryptedObject,
           iosSecurityOptions: iosSecurityOptions);
 
-      return !(await _areMD5matching(
-          decryptedObject: decryptedObject,
-          nativeJsonObject: nativeJsonObject));
+      return await _areMD5different(
+        decryptedObject: decryptedObject,
+        nativeJsonObject: nativeJsonObject,
+      );
     } on PlatformException catch (e) {
       throw PlatformResponseCodes.fromString(e.code);
     }
@@ -158,7 +160,7 @@ like in <a href="../../helpers_json_object/JsonObject-class.html">JsonObject</a>
 <footer>
   <span class="no-break">
     flutter_security
-      0.0.3
+      0.1.4
   </span>
 
   
