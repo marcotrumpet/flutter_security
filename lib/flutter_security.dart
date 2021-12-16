@@ -88,7 +88,6 @@ class FlutterSecurity {
     required List<JsonObject> nativeJsonObject,
   }) async {
     JsonObject? different;
-    final time = DateTime.now();
     for (var e in decryptedObject) {
       if (different != null) break;
 
@@ -103,8 +102,6 @@ class FlutterSecurity {
         });
       } on StateError catch (_) {}
     }
-    print(
-        'Total for loop done in ${DateTime.now().difference(time).inMilliseconds}ms');
     if (different != null) {
       return true;
     }
@@ -115,7 +112,6 @@ class FlutterSecurity {
     required IosSecurityOptions? iosSecurityOptions,
     required Map<String, dynamic> arguments,
   }) async {
-    final time = DateTime.now();
     final cryptedJsonPath = await _getCriptedJsonPath(arguments);
 
     final keyString = iosSecurityOptions!.cryptographicKey!;
@@ -138,9 +134,6 @@ class FlutterSecurity {
     final jsonObject =
         decodedObject.map((e) => JsonObject.fromJson(e)).toList();
 
-    print(
-        'Total decryption done in ${DateTime.now().difference(time).inMilliseconds}ms');
-
     return jsonObject;
   }
 
@@ -148,7 +141,6 @@ class FlutterSecurity {
     required IosSecurityOptions? iosSecurityOptions,
     required List<JsonObject>? decriptedObject,
   }) async {
-    final time = DateTime.now();
     final updatedIosSecurityOptions = iosSecurityOptions!.copyWith(
       listOfPaths: decriptedObject?.map((e) => e.path).toList(),
     );
@@ -164,8 +156,6 @@ class FlutterSecurity {
 
     final jsonObjectList =
         decodedJsonResult.map((e) => JsonObject.fromJson(e)).toList();
-    print(
-        'Total native object fetched in ${DateTime.now().difference(time).inMilliseconds}ms');
     return jsonObjectList;
   }
 
