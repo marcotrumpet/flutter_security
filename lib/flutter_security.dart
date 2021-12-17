@@ -55,6 +55,7 @@ class FlutterSecurity {
   }) async {
     late Map<String, dynamic> arguments;
 
+    var time = DateTime.now();
     if (Platform.isIOS) {
       try {
         if (iosSecurityOptions?.bundleId == null ||
@@ -66,13 +67,19 @@ class FlutterSecurity {
 
         final decryptedObject = await _getDecriptedObject(
             arguments: arguments, iosSecurityOptions: iosSecurityOptions);
+        print(
+            'Get decrypted object done in ${DateTime.now().difference(time).inMilliseconds}ms');
+        time = DateTime.now();
 
         if (decryptedObject == null) return null;
         final nativeJsonObject = await _getNativeJsonObject(
             decriptedObject: decryptedObject,
             iosSecurityOptions: iosSecurityOptions);
+        print(
+            'Get native object done in ${DateTime.now().difference(time).inMilliseconds}ms');
+        time = DateTime.now();
 
-        return await _areMD5different(
+        return _areMD5different(
           decryptedObject: decryptedObject,
           nativeJsonObject: nativeJsonObject,
         );
@@ -83,10 +90,10 @@ class FlutterSecurity {
     throw ResponseSecurityCodes.unavailable;
   }
 
-  static Future<bool> _areMD5different({
+  static bool _areMD5different({
     required List<JsonObject> decryptedObject,
     required List<JsonObject> nativeJsonObject,
-  }) async {
+  }) {
     JsonObject? different;
     for (var e in decryptedObject) {
       if (different != null) break;
