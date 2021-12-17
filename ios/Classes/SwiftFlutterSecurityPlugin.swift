@@ -38,14 +38,20 @@ public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
                 do {
                     var list: [[String: String]] = []
 
+                    let queue = OperationQueue()
+                    queue.name = "com.flutter.security"
+                    queue.qualityOfService = .userInitiated
+                    queue.maxConcurrentOperationCount = 8
+
                     for path in listOfPaths {
                         if #available(iOS 13.0, *) {
-                            let uint8Array = getUint8ArrayFromFile(path: bundle.resourcePath! + "/" + path)
-                            let md5 = getMD5(bytes: uint8Array)
-                            let temp = JsonField(path: path, hash: md5)
+                            queue.addOperation {
+                                let uint8Array = getUint8ArrayFromFile(path: bundle.resourcePath! + "/" + path)
+                                let md5 = getMD5(bytes: uint8Array)
+                                let temp = JsonField(path: path, hash: md5)
 
-                            list.append(temp.asDictionary)
-
+                                list.append(temp.asDictionary)
+                            }
                         } else {
                             result(FlutterError(code: "unavailable", message: "Only available from iOs13", details: nil))
                         }
