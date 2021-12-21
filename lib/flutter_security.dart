@@ -73,7 +73,7 @@ class FlutterSecurity {
 
         if (decryptedObject == null) return null;
         final nativeJsonObject = await _getNativeJsonObject(
-            decriptedObject: decryptedObject,
+            decryptedObject: decryptedObject,
             iosSecurityOptions: iosSecurityOptions);
         print(
             'Get native object done in ${DateTime.now().difference(time).inMilliseconds}ms');
@@ -90,6 +90,9 @@ class FlutterSecurity {
     throw ResponseSecurityCodes.unavailable;
   }
 
+  /// [_areMD5different] compare paths and hashes from two list of objecs:
+  /// [decryptedObject] - the one generated after build that you should implement in you CI/CD flow
+  /// [nativeJsonObject] - the one picked at runtime from bundle
   static bool _areMD5different({
     required List<JsonObject> decryptedObject,
     required List<JsonObject> nativeJsonObject,
@@ -115,11 +118,12 @@ class FlutterSecurity {
     return false;
   }
 
+  /// Decrypts the file with path:hash map using the key you provide
   static Future<List<JsonObject>?> _getDecriptedObject({
     required IosSecurityOptions? iosSecurityOptions,
     required Map<String, dynamic> arguments,
   }) async {
-    final cryptedJsonPath = await _getCriptedJsonPath(arguments);
+    final cryptedJsonPath = await _getCryptedJsonPath(arguments);
 
     final keyString = iosSecurityOptions!.cryptographicKey!;
 
@@ -144,12 +148,13 @@ class FlutterSecurity {
     return jsonObject;
   }
 
+  /// It gets the bundle based on [bundleId] parameter. Based on the decrypted path, gets the corresponding hashes at runtime.
   static Future<List<JsonObject>> _getNativeJsonObject({
     required IosSecurityOptions? iosSecurityOptions,
-    required List<JsonObject>? decriptedObject,
+    required List<JsonObject>? decryptedObject,
   }) async {
     final updatedIosSecurityOptions = iosSecurityOptions!.copyWith(
-      listOfPaths: decriptedObject?.map((e) => e.path).toList(),
+      listOfPaths: decryptedObject?.map((e) => e.path).toList(),
     );
 
     final updatedArguments = updatedIosSecurityOptions.toJson();
@@ -166,11 +171,11 @@ class FlutterSecurity {
     return jsonObjectList;
   }
 
-  static Future<String?> _getCriptedJsonPath(
+  static Future<String?> _getCryptedJsonPath(
       Map<String, dynamic> arguments) async {
     try {
       final String? path =
-          await _channel.invokeMethod('getCriptedJsonPath', arguments);
+          await _channel.invokeMethod('getCryptedJsonPath', arguments);
       return path;
     } on PlatformException catch (e) {
       throw PlatformResponseCodes.fromString(e.code);

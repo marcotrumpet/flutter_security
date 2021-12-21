@@ -1,4 +1,4 @@
-package com.example.flutter_security
+package com.flutter_security
 
 import android.annotation.SuppressLint
 import android.content.Context

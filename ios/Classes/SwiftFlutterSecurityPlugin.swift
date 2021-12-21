@@ -9,20 +9,22 @@ public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
+    /// Public function to handle methodChannels
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "amITampered":
             amITampered(call: call, result: result)
         case "getBundleMD5List":
             getBundleMD5List(call: call, result: result)
-        case "getCriptedJsonPath":
-            getCriptedJsonPath(call: call, result: result)
+        case "getCryptedJsonPath":
+            getCryptedJsonPath(call: call, result: result)
         default:
             result(FlutterError(code: "genericError", message: "Generic Error", details: nil))
         }
     }
 
-    private func getCriptedJsonPath(call: FlutterMethodCall, result: FlutterResult) {
+    /// Get the crypted json path
+    private func getCryptedJsonPath(call: FlutterMethodCall, result: FlutterResult) {
         if let args = call.arguments as? [String: Any], let bundleId = args["bundleId"] as? String, let jsonFileName = args["jsonFileName"] as? String {
             if let bundle = Bundle(identifier: bundleId), let path = bundle.resourcePath {
                 let completeJsonPath = path + "/" + jsonFileName
@@ -32,6 +34,7 @@ public class SwiftFlutterSecurityPlugin: NSObject, FlutterPlugin {
         }
     }
 
+    /// Get MD5 for every file using Queue
     private func getBundleMD5List(call: FlutterMethodCall, result: FlutterResult) {
         if let args = call.arguments as? [String: Any], let bundleId = args["bundleId"] as? String, let listOfPaths = args["listOfPaths"] as? [String] {
             if let bundle = Bundle(identifier: bundleId) {
