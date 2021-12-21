@@ -20,7 +20,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_security/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_security: f0591c0b9a51dbf3b82824bc722792ae20d57312
   IOSSecuritySuite: 0dbc01c68ce296c390ccf0443bf68cb40077abe8
 

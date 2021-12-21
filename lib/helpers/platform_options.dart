@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'platform_options.freezed.dart';
 part 'platform_options.g.dart';
@@ -9,8 +8,6 @@ abstract class PlatformSecurityOptions {}
 @freezed
 class IosSecurityOptions extends PlatformSecurityOptions
     with _$IosSecurityOptions {
-  @JsonSerializable(explicitToJson: true)
-
   /// [IosSecurityOptions] class containing options for iOs
   ///
   /// It enable you to pass:
@@ -39,7 +36,6 @@ class IosSecurityOptions extends PlatformSecurityOptions
 @freezed
 class AndroidSecurityOptions extends PlatformSecurityOptions
     with _$AndroidSecurityOptions {
-  @JsonSerializable(explicitToJson: true)
   factory AndroidSecurityOptions({final String? sha1}) =
       _AndroidSecurityOptions;
   factory AndroidSecurityOptions.fromJson(Map<String, dynamic> json) =>
